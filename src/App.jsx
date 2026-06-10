@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
+import ProductGrid from './components/ProductGrid';
 
 /* ----------------------------------------------------------------
    Constants / Content
@@ -274,66 +275,7 @@ function Hero() {
    Feature Card 1 — New Arrivals Shuffler
 ---------------------------------------------------------------- */
 function NewArrivalsShuffler() {
-  const items = [
-    { tag: 'Dresses', label: 'Silk Wrap Midi Dress', price: '$128', colors: ['#CC8FA0', '#241B1E', '#C9A66B', '#EBC3CE'] },
-    { tag: 'Outerwear', label: 'Oversized Wool Coat', price: '$248', colors: ['#241B1E', '#8C7C80', '#AD7186'] },
-    { tag: 'Tops', label: 'Ribbed Knit Bodysuit', price: '$58', colors: ['#FAF6F4', '#241B1E', '#CC8FA0', '#C9A66B'] },
-  ]
-  const [stack, setStack] = useState(items)
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setStack((prev) => {
-        const next = [...prev]
-        next.unshift(next.pop())
-        return next
-      })
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
-
-  return (
-    <div className="relative h-44 w-full">
-      {stack.map((item, i) => {
-        const offset = i
-        const total = stack.length
-        return (
-          <div
-            key={item.tag}
-            style={{
-              transform: `translate(${offset * 14}px, ${offset * 14}px) scale(${1 - offset * 0.05})`,
-              zIndex: total - offset,
-              opacity: 1 - offset * 0.25,
-              transition: 'transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease',
-            }}
-            className="absolute inset-0 bg-white border border-divider rounded-3xl p-5 shadow-md"
-          >
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-primary-dark bg-primary/10 px-2 py-1 rounded-full">
-                {item.tag}
-              </span>
-              <span className="font-mono text-xs text-muted">{item.price}</span>
-            </div>
-            <div className="mt-4 font-display text-lg font-semibold text-ink leading-tight">
-              {item.label}
-            </div>
-            <div className="mt-4 flex items-center gap-2">
-              {item.colors.map((c, idx) => (
-                <span
-                  key={idx}
-                  className="h-4 w-4 rounded-full border border-divider"
-                  style={{ background: c }}
-                />
-              ))}
-              <span className="font-mono text-[9px] uppercase tracking-widest text-muted ml-1">
-                {item.colors.length} colors
-              </span>
-            </div>
-          </div>
-        )
-      })}
-    </div>
-  )
+  return <ProductGrid collectionHandle="new-arrivals" />;
 }
 
 /* ----------------------------------------------------------------

@@ -33,7 +33,6 @@ const NAV_LINKS = [
   { label: 'Home', href: '#home' },
   { label: 'New In', href: '#new-in' },
   { label: 'Shop', href: '#shop' },
-  { label: 'Process', href: '#process' },
   { label: 'Contact', href: '#contact' },
 ]
 
@@ -762,7 +761,7 @@ function ShopCollection() {
   }, [])
 
   return (
-    <section id="shop-now" ref={sectionRef} className="relative py-28 sm:py-40 px-6 sm:px-10 lg:px-16 bg-background">
+    <section id="shop" ref={sectionRef} className="relative py-28 sm:py-40 px-6 sm:px-10 lg:px-16 bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="shop-heading max-w-3xl mb-16 sm:mb-24">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary-dark">
@@ -970,141 +969,6 @@ function Pillars() {
 }
 
 /* ----------------------------------------------------------------
-   Protocol — Sticky Stacking Cards
----------------------------------------------------------------- */
-function Protocol() {
-  const containerRef = useRef(null)
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray('.protocol-card')
-      cards.forEach((card, i) => {
-        if (i === cards.length - 1) return
-        gsap.to(card, {
-          scrollTrigger: {
-            trigger: card,
-            start: 'top top+=100',
-            endTrigger: cards[cards.length - 1],
-            end: 'top top+=120',
-            scrub: 1,
-          },
-          scale: 0.92,
-          filter: 'blur(6px) saturate(0.7)',
-          opacity: 0.5,
-          ease: 'none',
-        })
-      })
-    }, containerRef)
-    return () => ctx.revert()
-  }, [])
-
-  const steps = [
-    {
-      num: '01',
-      title: 'Design & Source',
-      tagline: 'Where it begins.',
-      text: 'Our design studio sketches each seasonal collection, then sources certified organic and recycled fabrics from mills that meet our sustainability standards.',
-      image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=1200&q=80',
-      alt: 'Fashion designer sketching and sourcing fabric swatches',
-      meta: 'Step 1 / Design',
-    },
-    {
-      num: '02',
-      title: 'Cut & Crafted',
-      tagline: 'Made by hand.',
-      text: 'Skilled artisans at our partner ateliers cut, sew and finish every garment in small batches, with quality checks at every stage of construction.',
-      image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1200&q=80',
-      alt: 'Artisan cutting and sewing fabric in a workshop',
-      meta: 'Step 2 / Craft',
-    },
-    {
-      num: '03',
-      title: 'Packed & Delivered',
-      tagline: 'Straight to you.',
-      text: 'Each order is folded, packed in recyclable materials and shipped worldwide — with a 30-day window to return or exchange if it is not quite right.',
-      image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=1200&q=80',
-      alt: 'Folded clothing packed for shipping',
-      meta: 'Step 3 / Delivery',
-    },
-  ]
-
-  return (
-    <section id="process" ref={containerRef} className="relative px-4 sm:px-6 py-20">
-      <div className="max-w-7xl mx-auto mb-16 px-2 sm:px-10">
-        <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary-dark">
-          ╱ How It's Made
-        </span>
-        <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-ink mt-4 leading-[1.05] tracking-tight max-w-3xl">
-          From sketch to
-          <span className="block font-serif italic font-medium text-primary-dark">
-            your doorstep.
-          </span>
-        </h2>
-      </div>
-
-      <div className="space-y-8">
-        {steps.map((step, idx) => (
-          <article
-            key={idx}
-            className="protocol-card sticky top-24 sm:top-28 mx-auto max-w-6xl bg-gradient-to-br from-surface to-background border border-divider rounded-6xl overflow-hidden shadow-2xl shadow-primary/5"
-          >
-            <div className="grid lg:grid-cols-5 gap-0 min-h-[60vh] lg:min-h-[70vh]">
-              {/* Left content */}
-              <div className="lg:col-span-3 p-8 sm:p-12 lg:p-16 flex flex-col justify-between">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs uppercase tracking-[0.25em] text-muted">
-                    {step.meta}
-                  </span>
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-primary-dark bg-primary/10 px-2.5 py-1 rounded-full">
-                    GlowFemme Edit
-                  </span>
-                </div>
-
-                <div className="my-12">
-                  <span className="font-display font-extrabold text-[7rem] sm:text-[10rem] leading-none text-primary/15 -mb-4 block">
-                    {step.num}
-                  </span>
-                  <h3 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl text-ink leading-[1.02] tracking-tight">
-                    {step.title}
-                  </h3>
-                  <p className="font-serif italic text-primary-dark text-2xl sm:text-3xl mt-3">
-                    {step.tagline}
-                  </p>
-                </div>
-
-                <p className="text-muted text-base sm:text-lg leading-relaxed max-w-lg">
-                  {step.text}
-                </p>
-              </div>
-
-              {/* Right visual */}
-              <div className="lg:col-span-2 relative overflow-hidden min-h-[300px] lg:min-h-full bg-deep">
-                <img
-                  src={step.image}
-                  alt={step.alt}
-                  loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-deep/60 via-transparent to-deep/15" />
-                <div className="absolute top-5 left-5 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full pl-3 pr-4 py-1.5 shadow-lg">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-ink">
-                    Step {step.num}
-                  </span>
-                </div>
-                <div className="absolute bottom-4 right-4 font-mono text-[10px] uppercase tracking-widest text-white/70">
-                  {step.num} / GlowFemme
-                </div>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-/* ----------------------------------------------------------------
    ServicesGrid — Shop by Category
 ---------------------------------------------------------------- */
 function ServicesGrid() {
@@ -1124,7 +988,7 @@ function ServicesGrid() {
   }, [])
 
   return (
-    <section id="shop" ref={ref} className="relative py-24 px-6 sm:px-10 lg:px-16 bg-deep text-white overflow-hidden rounded-t-6xl">
+    <section id="categories" ref={ref} className="relative py-24 px-6 sm:px-10 lg:px-16 bg-deep text-white overflow-hidden rounded-t-6xl">
       <div className="absolute inset-0 grid-bg opacity-20" />
       <div className="absolute -top-20 -right-20 h-96 w-96 rounded-full bg-primary/20 blur-3xl" />
       <div className="absolute bottom-0 -left-20 h-72 w-72 rounded-full bg-accent/15 blur-3xl" />
@@ -1149,9 +1013,10 @@ function ServicesGrid() {
           {CATEGORIES.map((svc, i) => {
             const Icon = svc.icon
             return (
-              <div
+              <a
                 key={i}
-                className="svc-tile group bg-deep p-7 sm:p-9 hover:bg-white/[0.02] transition-colors duration-500 relative"
+                href="#shop"
+                className="svc-tile group bg-deep p-7 sm:p-9 hover:bg-white/[0.02] transition-colors duration-500 relative block"
               >
                 <div className="flex items-start justify-between mb-6">
                   <div className="h-12 w-12 rounded-2xl bg-primary/15 border border-primary/30 flex items-center justify-center group-hover:bg-primary group-hover:scale-110 transition-all duration-500">
@@ -1163,7 +1028,7 @@ function ServicesGrid() {
                 </div>
                 <h3 className="font-display font-bold text-xl sm:text-2xl mb-3">{svc.title}</h3>
                 <p className="text-white/55 text-sm leading-relaxed">{svc.text}</p>
-              </div>
+              </a>
             )
           })}
         </div>
@@ -1575,7 +1440,6 @@ function Footer() {
             </p>
             <ul className="space-y-2.5">
               <li><a href="#about" className="text-white/65 hover:text-primary transition text-sm">Our Story</a></li>
-              <li><a href="#process" className="text-white/65 hover:text-primary transition text-sm">How It's Made</a></li>
               <li><a href="#contact" className="text-white/65 hover:text-primary transition text-sm">Contact</a></li>
             </ul>
           </div>
@@ -1641,7 +1505,6 @@ export default function App() {
         <Features />
         <ShopCollection />
         <Pillars />
-        <Protocol />
         <ServicesGrid />
         <TrustSignals />
         <ContactForm />

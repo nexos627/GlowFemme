@@ -57,6 +57,19 @@
   }
   .text-balance { text-wrap: balance; }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+  .shopify-content { @apply text-ink/80 leading-relaxed; }
+  .shopify-content p { @apply mb-4; }
+  .shopify-content ul { @apply list-disc pl-5 mb-4 space-y-1.5; }
+  .shopify-content h1,
+  .shopify-content h2,
+  .shopify-content h3 {
+    @apply font-display font-bold text-ink mt-6 mb-3 text-xl;
+  }
+  .shopify-content img {
+    @apply w-full h-auto rounded-3xl my-4;
+  }
+  .shopify-content a { @apply text-primary-dark underline; }
 }
 
 @layer utilities {

@@ -1,4 +1,23 @@
 /**
+ * Formats a Shopify price amount + currency code as a localized string.
+ * @param {string|number} amount
+ * @param {string} currency
+ * @returns {string}
+ */
+export function formatPrice(amount, currency) {
+  const value = Number(amount)
+  if (Number.isNaN(value)) return amount
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency || 'USD',
+    }).format(value)
+  } catch {
+    return `${amount} ${currency}`
+  }
+}
+
+/**
  * Wrapper around the Shopify Storefront API (GraphQL).
  * Reads VITE_ env vars, which Vite injects at build/dev time.
  */

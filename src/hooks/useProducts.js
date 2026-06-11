@@ -32,6 +32,73 @@ const PRODUCTS_QUERY = `
   }
 `
 
+const PRODUCT_BY_HANDLE_QUERY = `
+  query GetProduct($handle: String!) {
+    product(handle: $handle) {
+      id
+      title
+      descriptionHtml
+      images(first: 10) {
+        nodes {
+          url
+          altText
+        }
+      }
+      options {
+        name
+        values
+      }
+      variants(first: 25) {
+        nodes {
+          id
+          title
+          availableForSale
+          price {
+            amount
+            currencyCode
+          }
+          selectedOptions {
+            name
+            value
+          }
+        }
+      }
+    }
+  }
+`
+
+export function useProduct(handle) {
+  const [product, setProduct] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    if (!handle) return
+    let cancelled = false
+
+    async function load() {
+      setLoading(true)
+      setError(null)
+      try {
+        const data = await shopifyFetch(PRODUCT_BY_HANDLE_QUERY, { handle })
+        if (!cancelled) setProduct(data.product)
+      } catch (err) {
+        if (!cancelled) setError(err)
+        console.error(err)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [handle])
+
+  return { product, loading, error }
+}
+
 export function useProducts(first = 8) {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)

@@ -1,25 +1,14 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { ArrowUpRight, Loader2 } from 'lucide-react'
-import { createCheckout } from '../lib/shopify'
-
-function formatPrice(amount, currency) {
-  const value = Number(amount)
-  if (Number.isNaN(value)) return amount
-  try {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: currency || 'USD',
-    }).format(value)
-  } catch {
-    return `${amount} ${currency}`
-  }
-}
+import { createCheckout, formatPrice } from '../lib/shopify'
 
 export default function ProductCard({ product }) {
-  const { title, description, price, currency, imageUrl, imageAlt, variantId, inStock } = product
+  const { title, description, price, currency, imageUrl, imageAlt, variantId, inStock, handle } = product
   const [loading, setLoading] = useState(false)
 
-  async function handleBuy() {
+  async function handleBuy(e) {
+    e.preventDefault()
     if (!variantId || loading) return
     setLoading(true)
     try {
@@ -32,7 +21,10 @@ export default function ProductCard({ product }) {
   }
 
   return (
-    <div className="group relative flex flex-col h-full bg-surface border border-divider rounded-4xl overflow-hidden hover:border-primary/40 transition-colors duration-500 shadow-sm hover:shadow-xl hover:shadow-primary/10">
+    <Link
+      to={`/products/${handle}`}
+      className="group relative flex flex-col h-full bg-surface border border-divider rounded-4xl overflow-hidden hover:border-primary/40 transition-colors duration-500 shadow-sm hover:shadow-xl hover:shadow-primary/10"
+    >
       <div className="aspect-[4/5] w-full overflow-hidden bg-background">
         {imageUrl ? (
           <img
@@ -83,6 +75,6 @@ export default function ProductCard({ product }) {
           )}
         </button>
       </div>
-    </div>
+    </Link>
   )
 }

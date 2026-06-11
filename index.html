@@ -1,4 +1,3 @@
-<!-- TEST TOP -->
 <!doctype html>
 <html lang="en">
   <head>
@@ -15,82 +14,6 @@
   </head>
   <body>
     <div id="root"></div>
-    <!-- TEST COMMENT 123 -->
-    <script>console.log('test');</script>
     <script type="module" src="/src/main.jsx"></script>
-<script type="text/javascript">
-  function ShopifyBuyInit() {
-    const client = ShopifyBuy.buildClient({
-      domain: '__SHOPIFY_DOMAIN__',
-      storefrontAccessToken: '__SHOPIFY_TOKEN__',
-    });
-
-    ShopifyBuy.UI.onReady(client).then(function (ui) {
-      ui.createComponent('product', {
-        node: document.querySelectorAll('[data-product-id]'),
-        moneyFormat: '%24%7B%7Bamount%7D%7D',
-        options: {
-          product: {
-            styles: {
-              button: {
-                'background-color': '#CC8FA0',
-                ':hover': { 'background-color': '#AD7186' },
-                'border-radius': '0.5rem',
-                'padding': '0.75rem 1.5rem',
-                'font-size': '0.875rem',
-              },
-              quantity: {
-                'font-size': '0.875rem',
-              },
-              price: {
-                'font-size': '0.875rem',
-              },
-              compareAt: {
-                'font-size': '0.75rem',
-              },
-            },
-          },
-          cart: {
-            styles: {
-              button: {
-                'background-color': '#CC8FA0',
-                ':hover': { 'background-color': '#AD7186' },
-                'border-radius': '0.5rem',
-              },
-            },
-            toggle: {
-              styles: {
-                toggle: {
-                  'background-color': '#CC8FA0',
-                  ':hover': { 'background-color': '#AD7186' },
-                  'border-radius': '50%',
-                  width: '2.5rem',
-                  height: '2.5rem',
-                },
-                count: {
-                  'font-size': '0.875rem',
-                },
-              },
-            },
-          },
-        }
-      });
-    });
-  }
-
-  (function () {
-    var scriptURL = 'https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js';
-    if (window.ShopifyBuy) {
-      if (window.ShopifyBuy.UI !== undefined) ShopifyBuyInit();
-    } else {
-      var script = document.createElement('script');
-      script.src = scriptURL;
-      script.async = true;
-      script.onload = ShopifyBuyInit;
-      script.onerror = function () { console.error('Failed to load Shopify Buy Button SDK'); };
-      document.head.appendChild(script);
-    }
-  })();
-</script>
   </body>
 </html>

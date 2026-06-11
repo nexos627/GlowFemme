@@ -22,9 +22,9 @@ import {
   Globe,
   Truck,
 } from 'lucide-react'
+import ProductGrid from './components/ProductGrid'
 
 gsap.registerPlugin(ScrollTrigger)
-import ProductGrid from './components/ProductGrid';
 
 /* ----------------------------------------------------------------
    Constants / Content
@@ -275,7 +275,66 @@ function Hero() {
    Feature Card 1 — New Arrivals Shuffler
 ---------------------------------------------------------------- */
 function NewArrivalsShuffler() {
-  return <ProductGrid collectionHandle="new-arrivals" />;
+  const items = [
+    { tag: 'Dresses', label: 'Silk Wrap Midi Dress', price: '$128', colors: ['#CC8FA0', '#241B1E', '#C9A66B', '#EBC3CE'] },
+    { tag: 'Outerwear', label: 'Oversized Wool Coat', price: '$248', colors: ['#241B1E', '#8C7C80', '#AD7186'] },
+    { tag: 'Tops', label: 'Ribbed Knit Bodysuit', price: '$58', colors: ['#FAF6F4', '#241B1E', '#CC8FA0', '#C9A66B'] },
+  ]
+  const [stack, setStack] = useState(items)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStack((prev) => {
+        const next = [...prev]
+        next.unshift(next.pop())
+        return next
+      })
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="relative h-44 w-full">
+      {stack.map((item, i) => {
+        const offset = i
+        const total = stack.length
+        return (
+          <div
+            key={item.tag}
+            style={{
+              transform: `translate(${offset * 14}px, ${offset * 14}px) scale(${1 - offset * 0.05})`,
+              zIndex: total - offset,
+              opacity: 1 - offset * 0.25,
+              transition: 'transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease',
+            }}
+            className="absolute inset-0 bg-white border border-divider rounded-3xl p-5 shadow-md"
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-primary-dark bg-primary/10 px-2 py-1 rounded-full">
+                {item.tag}
+              </span>
+              <span className="font-mono text-xs text-muted">{item.price}</span>
+            </div>
+            <div className="mt-4 font-display text-lg font-semibold text-ink leading-tight">
+              {item.label}
+            </div>
+            <div className="mt-4 flex items-center gap-2">
+              {item.colors.map((c, idx) => (
+                <span
+                  key={idx}
+                  className="h-4 w-4 rounded-full border border-divider"
+                  style={{ background: c }}
+                />
+              ))}
+              <span className="font-mono text-[9px] uppercase tracking-widest text-muted ml-1">
+                {item.colors.length} colors
+              </span>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
 }
 
 /* ----------------------------------------------------------------
@@ -677,6 +736,47 @@ function Features() {
             </article>
           ))}
         </div>
+      </div>
+    </section>
+  )
+}
+
+/* ----------------------------------------------------------------
+   Shop Collection — live products from Shopify
+---------------------------------------------------------------- */
+function ShopCollection() {
+  const sectionRef = useRef(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.shop-heading > *', {
+        scrollTrigger: { trigger: sectionRef.current, start: 'top 90%', once: true },
+        y: 30,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        stagger: 0.08,
+      })
+    }, sectionRef)
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <section id="shop-now" ref={sectionRef} className="relative py-28 sm:py-40 px-6 sm:px-10 lg:px-16 bg-background">
+      <div className="max-w-7xl mx-auto">
+        <div className="shop-heading max-w-3xl mb-16 sm:mb-24">
+          <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary-dark">
+            ╱ Shop the Collection
+          </span>
+          <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl text-ink mt-4 leading-[1.05] tracking-tight">
+            New arrivals.
+            <span className="block font-serif italic font-medium text-primary-dark mt-1">
+              Ready to ship.
+            </span>
+          </h2>
+        </div>
+
+        <ProductGrid />
       </div>
     </section>
   )
@@ -1539,6 +1639,7 @@ export default function App() {
       <main>
         <Hero />
         <Features />
+        <ShopCollection />
         <Pillars />
         <Protocol />
         <ServicesGrid />

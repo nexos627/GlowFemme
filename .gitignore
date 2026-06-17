@@ -29,3 +29,6 @@ dist-ssr
 *.sw?
 
 .vercel
+.c/
+out.txt
+test.html

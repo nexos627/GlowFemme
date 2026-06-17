@@ -1,4 +1,12 @@
 /**
+ * Shopify Storefront API wrapper.
+ *
+ * SECURITY NOTE: Both VITE_ vars are bundled into the client JS at build time
+ * (this is intentional for the Storefront API — it is a public, read-only token).
+ * NEVER put an Admin API token or private app secret here.
+ */
+
+/**
  * Formats a Shopify price amount + currency code as a localized string.
  * @param {string|number} amount
  * @param {string} currency
@@ -17,12 +25,8 @@ export function formatPrice(amount, currency) {
   }
 }
 
-/**
- * Wrapper around the Shopify Storefront API (GraphQL).
- * Reads VITE_ env vars, which Vite injects at build/dev time.
- */
 export const SHOPIFY_DOMAIN = import.meta.env.VITE_SHOPIFY_DOMAIN
-export const SHOPIFY_TOKEN = import.meta.env.VITE_SHOPIFY_TOKEN
+export const SHOPIFY_TOKEN  = import.meta.env.VITE_SHOPIFY_TOKEN
 
 if (!SHOPIFY_DOMAIN) {
   console.warn('VITE_SHOPIFY_DOMAIN is not set – Shopify API calls will fail')
@@ -30,11 +34,9 @@ if (!SHOPIFY_DOMAIN) {
 
 /**
  * Runs a GraphQL query/mutation against the Storefront API.
- * The Storefront access token header is only sent when configured —
- * many shops allow unauthenticated read/cart access on this API.
- * @param {string} queryString - A GraphQL query (already a string).
- * @param {Object} [variables] - Optional variables for the query.
- * @returns {Promise<any>} Parsed JSON response data.
+ * @param {string} queryString - Static GraphQL query string.
+ * @param {Object} [variables]  - Variables passed separately (never interpolated into the query string).
+ * @returns {Promise<any>}
  */
 export async function shopifyFetch(queryString, variables = {}) {
   const headers = { 'Content-Type': 'application/json' }
@@ -51,11 +53,18 @@ export async function shopifyFetch(queryString, variables = {}) {
     }
   )
 
+  if (!resp.ok) {
+    console.error('[shopify] HTTP error', resp.status, resp.statusText)
+    throw new Error('Unable to reach the store right now. Please try again.')
+  }
+
   const json = await resp.json()
 
   if (json.errors) {
-    throw new Error(`Shopify GraphQL error: ${JSON.stringify(json.errors)}`)
+    console.error('[shopify] GraphQL errors', json.errors)
+    throw new Error('Something went wrong loading this page. Please refresh.')
   }
+
   return json.data
 }
 
@@ -75,11 +84,10 @@ const CART_CREATE_MUTATION = `
 `
 
 /**
- * Creates a Shopify cart with a single line item and returns the
- * hosted checkout URL the customer should be redirected to.
+ * Creates a Shopify cart with one line item and returns the hosted checkout URL.
  * @param {string} variantId - Storefront API product variant GID.
  * @param {number} [quantity]
- * @returns {Promise<string>} The checkout URL.
+ * @returns {Promise<string>} Checkout URL.
  */
 export async function createCheckout(variantId, quantity = 1) {
   const data = await shopifyFetch(CART_CREATE_MUTATION, {
@@ -89,7 +97,8 @@ export async function createCheckout(variantId, quantity = 1) {
   const { cart, userErrors } = data.cartCreate
 
   if (userErrors?.length) {
-    throw new Error(userErrors.map((e) => e.message).join(', '))
+    console.error('[shopify] cart userErrors', userErrors)
+    throw new Error('Could not start checkout. Please try again.')
   }
 
   return cart.checkoutUrl
